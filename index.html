@@ -61,13 +61,14 @@ nav{
   transition:color .2s;cursor:pointer;
 }
 .nav-links a:hover,.nav-links a.active{color:var(--navy)}
-.nav-btn{
-  font-size:0.7rem;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;
-  color:var(--white);background:var(--navy);
-  border:none;padding:.55rem 1.5rem;cursor:pointer;text-decoration:none;
-  transition:background .2s;
-}
-.nav-btn:hover{background:var(--blue)}
+.nav-avail{display:flex;flex-direction:column;gap:.3rem}
+.nav-avail-row{display:flex;align-items:center;gap:.45rem}
+.nav-avail-dot{width:7px;height:7px;border-radius:50%;background:#22C55E;animation:glow 2s ease-in-out infinite;flex-shrink:0;transition:background .3s}
+.nav-avail-dot.closed{background:#EF4444;animation:none;box-shadow:none}
+.nav-avail-session{font-size:.57rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.nav-avail-time{font-size:.57rem;color:var(--light-muted);letter-spacing:.02em}
+.nav-avail-status{font-size:.57rem;letter-spacing:.08em;text-transform:uppercase;color:#16803C;font-weight:500;transition:color .3s}
+.nav-avail-status.closed{color:#991B1B}
 
 /* HERO */
 .hero{
@@ -258,6 +259,22 @@ nav{
 .gallery-caption-tag{font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.3rem}
 .gallery-caption-text{font-size:.78rem;color:#fff;font-weight:400;line-height:1.4}
 
+/* EVENTS PAGE */
+#page-events.active{min-height:100vh}
+.events-page{padding:8rem 5vw 6rem}
+.events-intro{text-align:center;margin-bottom:3.5rem}
+.events-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.event-card{background:rgba(255,255,255,.85);border:1px solid var(--border);overflow:hidden}
+.event-card-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--offwhite)}
+.event-card-img-placeholder{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#EEF2FA,#DDE4F4)}
+.event-card-body{padding:1.2rem 1.5rem}
+.event-card-name{font-size:.92rem;font-weight:500;color:var(--navy);line-height:1.4}
+.events-empty{text-align:center;padding:5rem 2rem;color:var(--muted);font-size:.88rem;line-height:1.9}
+.admin-event-item{display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--border)}
+.admin-event-item:last-child{border-bottom:none}
+.admin-event-item span{font-size:.75rem;color:var(--navy);text-align:left;flex:1;padding-right:1rem}
+.admin-event-del{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:#991B1B;background:none;border:none;cursor:pointer;flex-shrink:0}
+
 /* PARTNERS STRIP */
 .partners-strip{padding:5rem 5vw;background:rgba(245,247,250,0.72);border-top:1px solid var(--border)}
 .partners-strip-label{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--blue-lt);margin-bottom:2rem;text-align:center}
@@ -316,7 +333,7 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
   .strip-stat-row{justify-content:center}
   .services-grid{grid-template-columns:1fr 1fr}
   .gallery-grid{grid-template-columns:1fr 1fr}
-  .partners-grid{grid-template-columns:1fr 1fr}
+  .partners-grid,.events-grid{grid-template-columns:1fr 1fr}
   .gallery-item:nth-child(1),.gallery-item:nth-child(5){grid-column:span 1;aspect-ratio:1}
   .about{grid-template-columns:1fr}
   .about-visual{aspect-ratio:auto;min-height:340px}
@@ -325,13 +342,14 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
   footer{flex-direction:column;align-items:flex-start;gap:.7rem;padding:1.8rem 4vw}
 }
 @media(max-width:760px){
-  .nav-links,.nav-btn{display:none}
+  .nav-links{display:none}
+  .nav-avail-session,.nav-avail-time,.nav-avail-status{display:none}
   .nav-hamburger{display:flex}
   .nav-brand img{height:46px}
   .nav-brand{font-size:.68rem}
 }
 @media(max-width:560px){
-  .services-grid,.gallery-grid,.partners-grid{grid-template-columns:1fr}
+  .services-grid,.gallery-grid,.partners-grid,.events-grid{grid-template-columns:1fr}
   .gallery-item:nth-child(1),.gallery-item:nth-child(5){aspect-ratio:1}
   .hero{padding:7rem 5vw 4rem}
   .hero-actions{flex-direction:column;align-items:center}
@@ -364,9 +382,23 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
     <li><a onclick="showPage('home');scrollToSection('#services')" class="nav-page" data-target="home">Services</a></li>
     <li><a onclick="showPage('home');scrollToSection('#about')" class="nav-page" data-target="home">About</a></li>
     <li><a onclick="showPage('gallery')" class="nav-page" data-target="gallery">Gallery</a></li>
+    <li><a onclick="showPage('events')" class="nav-page" data-target="events">Events</a></li>
 <li><a onclick="showPage('home');scrollToSection('#contact')" class="nav-page" data-target="home">Contact</a></li>
   </ul>
-  <a onclick="showPage('home');scrollToSection('#contact')" class="nav-btn" style="cursor:pointer">Book a Visit</a>
+  <div class="nav-avail">
+    <div class="nav-avail-row">
+      <div class="nav-avail-dot" id="nav-dot-morning"></div>
+      <span class="nav-avail-session">Morning</span>
+      <span class="nav-avail-time" id="nav-time-morning">9:00AM – 12:00PM</span>
+      <span class="nav-avail-status" id="nav-status-morning">Open</span>
+    </div>
+    <div class="nav-avail-row">
+      <div class="nav-avail-dot" id="nav-dot-evening"></div>
+      <span class="nav-avail-session">Evening</span>
+      <span class="nav-avail-time" id="nav-time-evening">6:00PM – 10:30PM</span>
+      <span class="nav-avail-status" id="nav-status-evening">Open</span>
+    </div>
+  </div>
   <button class="nav-hamburger" onclick="openMobileNav()" aria-label="Open menu"><span></span><span></span><span></span></button>
 </nav>
 
@@ -376,8 +408,8 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
   <a onclick="closeMobileNav();showPage('home');scrollToSection('#services')">Services</a>
   <a onclick="closeMobileNav();showPage('home');scrollToSection('#about')">About</a>
   <a onclick="closeMobileNav();showPage('gallery')">Gallery</a>
-<a onclick="closeMobileNav();showPage('home');scrollToSection('#contact')">Contact</a>
-  <a onclick="closeMobileNav();showPage('home');scrollToSection('#contact')" class="btn-primary">Book a Visit</a>
+  <a onclick="closeMobileNav();showPage('events')">Events</a>
+  <a onclick="closeMobileNav();showPage('home');scrollToSection('#contact')">Contact</a>
 </div>
 
 <!-- ══════════════════ HOME PAGE ══════════════════ -->
@@ -488,6 +520,19 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
   </section>
 
 </div><!-- /page-home -->
+
+<!-- ══════════════════ EVENTS PAGE ══════════════════ -->
+<div class="page" id="page-events">
+  <div class="events-page">
+    <div class="events-intro">
+      <p class="eyebrow">What's On</p>
+      <h2 class="section-title">Upcoming<br><em>events</em></h2>
+    </div>
+    <div id="events-container">
+      <p class="events-empty">No upcoming events at the moment.<br>Check back soon.</p>
+    </div>
+  </div>
+</div><!-- /page-events -->
 
 <!-- ══════════════════ GALLERY PAGE ══════════════════ -->
 <div class="page" id="page-gallery">
@@ -614,6 +659,13 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
             <button class="btn-primary" onclick="setStatus('evening',true)">Accepting</button>
             <button class="btn-outline" onclick="setStatus('evening',false)">Not available</button>
           </div>
+        </div>
+        <div style="margin-top:1.8rem;padding-top:1.8rem;border-top:1px solid var(--border)">
+          <p style="font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem">Events</p>
+          <input type="text" id="admin-event-name" class="admin-field" placeholder="Event name"/>
+          <input type="text" id="admin-event-img" class="admin-field" placeholder="Image URL (paste a link to the photo)"/>
+          <button class="btn-primary" style="width:100%;margin-bottom:1.2rem" onclick="addEvent()">Add Event</button>
+          <div id="admin-events-list"></div>
         </div>
         <p id="admin-feedback" class="admin-feedback"></p>
         <p style="margin-top:1.5rem"><a onclick="adminLogout()" style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer">Sign out</a></p>
@@ -783,6 +835,10 @@ function applyStatus(session, accepting){
   }
   const disp = document.getElementById(`admin-${session}-display`);
   if(disp) disp.textContent = accepting ? '🟢 Accepting patients' : '🔴 Not available';
+  const navDot = document.getElementById(`nav-dot-${session}`);
+  if(navDot){ accepting ? navDot.classList.remove('closed') : navDot.classList.add('closed'); }
+  const navSt = document.getElementById(`nav-status-${session}`);
+  if(navSt){ navSt.textContent = accepting ? 'Open' : 'Closed'; accepting ? navSt.classList.remove('closed') : navSt.classList.add('closed'); }
 }
 
 /* ── ADMIN AUTH ── */
@@ -794,6 +850,7 @@ function adminLogin(){
     document.getElementById('login-error').textContent='';
     document.getElementById('admin-time-morning').value = document.getElementById('avail-time-morning').textContent;
     document.getElementById('admin-time-evening').value = document.getElementById('avail-time-evening').textContent;
+    renderAdminEvents(window._events);
   } else {
     document.getElementById('login-error').textContent='Incorrect password.';
   }
@@ -804,6 +861,7 @@ function saveSessionTime(session){
   const val = document.getElementById(`admin-time-${session}`).value.trim();
   if(!val) return;
   document.getElementById(`avail-time-${session}`).textContent = val;
+  const navT = document.getElementById(`nav-time-${session}`); if(navT) navT.textContent = val;
   localStorage.setItem(`clinic_time_${session}`, val);
   if(typeof firebaseSaveTime === 'function') firebaseSaveTime(session, val);
   document.getElementById('admin-feedback').textContent = 'Time updated.';
@@ -833,13 +891,75 @@ window.addEventListener('hashchange', ()=>{
   if(window.location.hash === '#admin') showPage('admin');
 });
 
+/* ── EVENTS ── */
+window._events = {};
+
+function _esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function renderEvents(events){
+  const c = document.getElementById('events-container');
+  if(!c) return;
+  const entries = Object.entries(events||{});
+  if(!entries.length){
+    c.innerHTML = '<p class="events-empty">No upcoming events at the moment.<br>Check back soon.</p>';
+    return;
+  }
+  c.innerHTML = '<div class="events-grid">' + entries.map(([,ev])=>`
+    <div class="event-card">
+      ${ev.imageUrl
+        ? `<img class="event-card-img" src="${_esc(ev.imageUrl)}" alt="${_esc(ev.name)}" onerror="this.style.display='none'">`
+        : `<div class="event-card-img-placeholder"></div>`}
+      <div class="event-card-body"><p class="event-card-name">${_esc(ev.name)}</p></div>
+    </div>`).join('') + '</div>';
+}
+
+function renderAdminEvents(events){
+  const list = document.getElementById('admin-events-list');
+  if(!list) return;
+  const entries = Object.entries(events||{});
+  if(!entries.length){ list.innerHTML='<p style="font-size:.72rem;color:var(--muted)">No events yet.</p>'; return; }
+  list.innerHTML = entries.map(([id,ev])=>`
+    <div class="admin-event-item">
+      <span>${_esc(ev.name)}</span>
+      <button class="admin-event-del" onclick="deleteEvent('${_esc(id)}')">Remove</button>
+    </div>`).join('');
+}
+
+function addEvent(){
+  const name = document.getElementById('admin-event-name').value.trim();
+  const img  = document.getElementById('admin-event-img').value.trim();
+  if(!name){ document.getElementById('admin-feedback').textContent='Enter an event name.'; return; }
+  const id = 'ev_' + Date.now();
+  window._events[id] = { name, imageUrl: img };
+  _saveEvents();
+  document.getElementById('admin-event-name').value='';
+  document.getElementById('admin-event-img').value='';
+  document.getElementById('admin-feedback').textContent='Event added.';
+  setTimeout(()=>{ document.getElementById('admin-feedback').textContent=''; }, 3000);
+}
+
+function deleteEvent(id){
+  delete window._events[id];
+  _saveEvents();
+}
+
+function _saveEvents(){
+  localStorage.setItem('clinic_events', JSON.stringify(window._events));
+  renderEvents(window._events);
+  renderAdminEvents(window._events);
+  if(typeof firebaseSaveEvents === 'function') firebaseSaveEvents(window._events);
+}
+
 /* ── FALLBACK: read from localStorage until Firebase is connected ── */
 ['morning','evening'].forEach(s=>{
   const stored=localStorage.getItem(`clinic_${s}`);
   if(stored !== null) applyStatus(s, stored !== 'false');
   const t=localStorage.getItem(`clinic_time_${s}`);
-  if(t){ const el=document.getElementById(`avail-time-${s}`); if(el) el.textContent=t; }
+  if(t){ const el=document.getElementById(`avail-time-${s}`); if(el) el.textContent=t; const nt=document.getElementById(`nav-time-${s}`); if(nt) nt.textContent=t; }
 });
+(function(){
+  try{ const e=localStorage.getItem('clinic_events'); if(e){ window._events=JSON.parse(e); renderEvents(window._events); } }catch(x){}
+})();
 </script>
 
 <!-- ══ FIREBASE ══════════════════════════════════════════════════════
@@ -879,7 +999,7 @@ window.addEventListener('hashchange', ()=>{
     };
     ['morning','evening'].forEach(s=>{
       onValue(timeRefs[s], (snap)=>{
-        const v=snap.val(); if(v){ const el=document.getElementById(`avail-time-${s}`); if(el) el.textContent=v; }
+        const v=snap.val(); if(v){ const el=document.getElementById(`avail-time-${s}`); if(el) el.textContent=v; const nt=document.getElementById(`nav-time-${s}`); if(nt) nt.textContent=v; }
       });
     });
 
@@ -894,6 +1014,16 @@ window.addEventListener('hashchange', ()=>{
 
     window.firebaseSaveTime = (session, val) => {
       set(timeRefs[session], val);
+    };
+
+    const eventsRef = ref(db, 'clinic/events');
+    onValue(eventsRef, (snap) => {
+      window._events = snap.val() || {};
+      renderEvents(window._events);
+      renderAdminEvents(window._events);
+    });
+    window.firebaseSaveEvents = (events) => {
+      set(eventsRef, Object.keys(events).length ? events : null);
     };
   }
 </script>
