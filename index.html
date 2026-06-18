@@ -274,6 +274,9 @@ nav{
 .admin-event-item:last-child{border-bottom:none}
 .admin-event-item span{font-size:.75rem;color:var(--navy);text-align:left;flex:1;padding-right:1rem}
 .admin-event-del{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:#991B1B;background:none;border:none;cursor:pointer;flex-shrink:0}
+.admin-upload-label{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;padding:.85rem;border:1px dashed var(--border-md);text-align:center;cursor:pointer;margin-bottom:.8rem;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);transition:border-color .2s,background .2s}
+.admin-upload-label:hover{border-color:var(--navy);background:var(--offwhite)}
+.admin-event-preview{width:100%;max-height:150px;object-fit:cover;display:block;margin-bottom:.8rem;border:1px solid var(--border)}
 
 /* PARTNERS STRIP */
 .partners-strip{padding:5rem 5vw;background:rgba(245,247,250,0.72);border-top:1px solid var(--border)}
@@ -663,7 +666,14 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
         <div style="margin-top:1.8rem;padding-top:1.8rem;border-top:1px solid var(--border)">
           <p style="font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem">Events</p>
           <input type="text" id="admin-event-name" class="admin-field" placeholder="Event name"/>
-          <input type="text" id="admin-event-img" class="admin-field" placeholder="Image URL (paste a link to the photo)"/>
+          <label class="admin-upload-label" for="admin-event-file">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span id="admin-upload-text">Upload photo</span>
+          </label>
+          <input type="file" id="admin-event-file" accept="image/*" style="display:none" onchange="previewEventImage(this)"/>
+          <img id="admin-event-preview" class="admin-event-preview" style="display:none" alt="preview"/>
+          <p style="font-size:.58rem;text-align:center;color:var(--light-muted);margin-bottom:.6rem;letter-spacing:.06em">— or paste a URL —</p>
+          <input type="text" id="admin-event-img" class="admin-field" placeholder="https://..."/>
           <button class="btn-primary" style="width:100%;margin-bottom:1.2rem" onclick="addEvent()">Add Event</button>
           <div id="admin-events-list"></div>
         </div>
@@ -925,15 +935,51 @@ function renderAdminEvents(events){
     </div>`).join('');
 }
 
+let _pendingImageData = null;
+
+function compressImage(file, cb){
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 1000;
+      let w = img.width, h = img.height;
+      if(w > MAX){ h = Math.round(h * MAX / w); w = MAX; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      cb(canvas.toDataURL('image/jpeg', 0.82));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function previewEventImage(input){
+  if(!input.files || !input.files[0]) return;
+  document.getElementById('admin-upload-text').textContent = input.files[0].name;
+  compressImage(input.files[0], dataUrl => {
+    _pendingImageData = dataUrl;
+    const prev = document.getElementById('admin-event-preview');
+    prev.src = dataUrl; prev.style.display = 'block';
+    document.getElementById('admin-event-img').value = '';
+  });
+}
+
 function addEvent(){
   const name = document.getElementById('admin-event-name').value.trim();
-  const img  = document.getElementById('admin-event-img').value.trim();
+  const urlVal = document.getElementById('admin-event-img').value.trim();
+  const imageUrl = _pendingImageData || urlVal;
   if(!name){ document.getElementById('admin-feedback').textContent='Enter an event name.'; return; }
   const id = 'ev_' + Date.now();
-  window._events[id] = { name, imageUrl: img };
+  window._events[id] = { name, imageUrl };
   _saveEvents();
   document.getElementById('admin-event-name').value='';
   document.getElementById('admin-event-img').value='';
+  document.getElementById('admin-event-file').value='';
+  document.getElementById('admin-upload-text').textContent='Upload photo';
+  document.getElementById('admin-event-preview').style.display='none';
+  _pendingImageData = null;
   document.getElementById('admin-feedback').textContent='Event added.';
   setTimeout(()=>{ document.getElementById('admin-feedback').textContent=''; }, 3000);
 }
