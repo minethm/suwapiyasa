@@ -269,22 +269,63 @@ footer{
 .f-brand span{font-weight:400;color:rgba(255,255,255,0.7)}
 footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spacing:.04em}
 
+/* MOBILE NAV */
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:.4rem;background:none;border:none;flex-shrink:0}
+.nav-hamburger span{display:block;width:22px;height:1.5px;background:var(--navy);transition:all .3s}
+.mobile-nav{
+  display:none;position:fixed;inset:0;
+  background:rgba(255,255,255,.97);backdrop-filter:blur(20px);
+  z-index:300;flex-direction:column;align-items:center;justify-content:center;gap:2.2rem;
+}
+.mobile-nav.open{display:flex}
+.mobile-nav a{
+  font-family:'Montserrat',sans-serif;font-size:.88rem;font-weight:400;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--navy);
+  text-decoration:none;cursor:pointer;
+}
+.mobile-nav .btn-primary{margin-top:.5rem;padding:.9rem 2.5rem}
+.mobile-nav-close{
+  position:absolute;top:1.4rem;right:5vw;
+  font-size:1.3rem;cursor:pointer;color:var(--navy);background:none;border:none;padding:.5rem;line-height:1
+}
+
 /* RESPONSIVE */
 @media(max-width:900px){
   .doctor-strip{grid-template-columns:1fr;text-align:center}
   .strip-left{text-align:center}
   .strip-stat-row{justify-content:center}
-  .services-grid,.gallery-grid{grid-template-columns:1fr 1fr}
+  .services-grid{grid-template-columns:1fr 1fr}
+  .gallery-grid{grid-template-columns:1fr 1fr}
   .gallery-item:nth-child(1),.gallery-item:nth-child(5){grid-column:span 1;aspect-ratio:1}
   .about{grid-template-columns:1fr}
   .about-visual{aspect-ratio:auto;min-height:340px}
   .contact-grid{grid-template-columns:1fr}
   nav{padding:1rem 4vw}
+  footer{flex-direction:column;align-items:flex-start;gap:.7rem;padding:1.8rem 4vw}
+}
+@media(max-width:760px){
+  .nav-links,.nav-btn{display:none}
+  .nav-hamburger{display:flex}
+  .nav-brand img{height:46px}
+  .nav-brand{font-size:.68rem}
 }
 @media(max-width:560px){
   .services-grid,.gallery-grid{grid-template-columns:1fr}
   .gallery-item:nth-child(1),.gallery-item:nth-child(5){aspect-ratio:1}
-  .nav-links{display:none}
+  .hero{padding:7rem 5vw 4rem}
+  .hero-actions{flex-direction:column;align-items:center}
+  .btn-primary,.btn-outline{width:100%;max-width:280px;text-align:center}
+  .about{padding:5rem 5vw}
+  .services{padding:5rem 5vw}
+  .contact{padding:5rem 5vw}
+  .admin-card{padding:2.5rem 1.4rem}
+  .avail-row{flex-wrap:wrap;gap:.5rem}
+  footer p{font-size:.65rem}
+  .f-brand{font-size:.65rem}
+  .f-brand img{height:34px}
+}
+@media(hover:none){
+  .gallery-caption{opacity:1;background:linear-gradient(to top,rgba(10,22,40,.75) 0%,transparent 100%)}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.scroll-line{display:none}}
 </style>
@@ -305,7 +346,18 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
     <li><a onclick="showPage('home');scrollToSection('#contact')" class="nav-page" data-target="home">Contact</a></li>
   </ul>
   <a onclick="showPage('home');scrollToSection('#contact')" class="nav-btn" style="cursor:pointer">Book a Visit</a>
+  <button class="nav-hamburger" onclick="openMobileNav()" aria-label="Open menu"><span></span><span></span><span></span></button>
 </nav>
+
+<!-- MOBILE NAV OVERLAY -->
+<div class="mobile-nav" id="mobile-nav">
+  <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="Close menu">✕</button>
+  <a onclick="closeMobileNav();showPage('home');scrollToSection('#services')">Services</a>
+  <a onclick="closeMobileNav();showPage('home');scrollToSection('#about')">About</a>
+  <a onclick="closeMobileNav();showPage('gallery')">Gallery</a>
+  <a onclick="closeMobileNav();showPage('home');scrollToSection('#contact')">Contact</a>
+  <a onclick="closeMobileNav();showPage('home');scrollToSection('#contact')" class="btn-primary">Book a Visit</a>
+</div>
 
 <!-- ══════════════════ HOME PAGE ══════════════════ -->
 <div class="page active" id="page-home">
@@ -492,7 +544,7 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
 <!-- FOOTER (shared) -->
 <footer>
   <div class="f-brand"><img src="photo/LOGO_wht.png" alt="Suwapiyasa Family Care logo"/><strong>Suwapiyasa</strong> <span>Family Care</span></div>
-  <p>Dr. Malika Mendis · SLMC REG.NO. 19252 · Family Medicine Specialist</p>
+  <p>Dr. Malika Mendis · SLMC REG.NO. 19252 · Family Physician</p>
   <p>© Suwapiyasa 2026 All rights reserved</p>
 </footer>
 
@@ -553,6 +605,16 @@ function scrollToSection(hash){
     const el=document.querySelector(hash);
     if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
   },50);
+}
+
+/* ── MOBILE NAV ── */
+function openMobileNav(){
+  document.getElementById('mobile-nav').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeMobileNav(){
+  document.getElementById('mobile-nav').classList.remove('open');
+  document.body.style.overflow='';
 }
 
 /* ── LIVE CANVAS BACKGROUND ── */
