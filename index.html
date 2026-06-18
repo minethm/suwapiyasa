@@ -4,7 +4,8 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Suwapiyasa Family Care</title>
-<link rel="icon" type="photo/favi.png" href="photo/favi.png"/>
+<link rel="icon" type="image/png" href="photo/LOGO.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -530,21 +531,7 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
             <button class="btn-outline" onclick="setStatus('evening',false)">Not available</button>
           </div>
         </div>
-        <div style="border-top:1px solid var(--border);padding-top:1.8rem;margin-top:.5rem">
-          <p class="admin-section-title">Opening Hours</p>
-          <div style="display:flex;gap:.8rem;margin-bottom:.8rem">
-            <div style="flex:0 0 120px">
-              <p style="font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;text-align:left">Days</p>
-              <input type="text" id="admin-hours-days" class="admin-field" style="margin-bottom:0" placeholder="Mon – Sun"/>
-            </div>
-            <div style="flex:1">
-              <p style="font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;text-align:left">Hours</p>
-              <input type="text" id="admin-hours-time" class="admin-field" style="margin-bottom:0" placeholder="9:00AM – 12:00PM, 6:00PM – 10:30PM"/>
-            </div>
-          </div>
-          <button class="btn-primary" style="width:100%" onclick="saveHours()">Save Opening Hours</button>
-        </div>
-        <p id="admin-feedback" class="admin-feedback"></p>
+<p id="admin-feedback" class="admin-feedback"></p>
         <p style="margin-top:1.5rem"><a onclick="adminLogout()" style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer">Sign out</a></p>
       </div>
     </div>
