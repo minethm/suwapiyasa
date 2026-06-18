@@ -258,10 +258,9 @@ nav{
 .gallery-caption-tag{font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.3rem}
 .gallery-caption-text{font-size:.78rem;color:#fff;font-weight:400;line-height:1.4}
 
-/* PARTNERS PAGE */
-#page-partners.active{min-height:100vh}
-.partners-page{padding:8rem 5vw 6rem}
-.partners-intro{text-align:center;margin-bottom:4rem}
+/* PARTNERS STRIP */
+.partners-strip{padding:5rem 5vw;background:rgba(245,247,250,0.72);border-top:1px solid var(--border)}
+.partners-strip-label{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--blue-lt);margin-bottom:2rem;text-align:center}
 .partners-grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -270,11 +269,9 @@ nav{
 }
 .partner-card{
   background:rgba(255,255,255,.82);
-  padding:3rem 2.5rem;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;
-  transition:background .3s;
+  padding:2.5rem 2rem;
+  display:flex;align-items:center;justify-content:center;
 }
-.partner-card:hover{background:var(--offwhite)}
 .partner-card img{
   max-width:180px;max-height:90px;
   width:auto;height:auto;
@@ -367,8 +364,7 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
     <li><a onclick="showPage('home');scrollToSection('#services')" class="nav-page" data-target="home">Services</a></li>
     <li><a onclick="showPage('home');scrollToSection('#about')" class="nav-page" data-target="home">About</a></li>
     <li><a onclick="showPage('gallery')" class="nav-page" data-target="gallery">Gallery</a></li>
-    <li><a onclick="showPage('partners')" class="nav-page" data-target="partners">Partners</a></li>
-    <li><a onclick="showPage('home');scrollToSection('#contact')" class="nav-page" data-target="home">Contact</a></li>
+<li><a onclick="showPage('home');scrollToSection('#contact')" class="nav-page" data-target="home">Contact</a></li>
   </ul>
   <a onclick="showPage('home');scrollToSection('#contact')" class="nav-btn" style="cursor:pointer">Book a Visit</a>
   <button class="nav-hamburger" onclick="openMobileNav()" aria-label="Open menu"><span></span><span></span><span></span></button>
@@ -380,8 +376,7 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
   <a onclick="closeMobileNav();showPage('home');scrollToSection('#services')">Services</a>
   <a onclick="closeMobileNav();showPage('home');scrollToSection('#about')">About</a>
   <a onclick="closeMobileNav();showPage('gallery')">Gallery</a>
-  <a onclick="closeMobileNav();showPage('partners')">Partners</a>
-  <a onclick="closeMobileNav();showPage('home');scrollToSection('#contact')">Contact</a>
+<a onclick="closeMobileNav();showPage('home');scrollToSection('#contact')">Contact</a>
   <a onclick="closeMobileNav();showPage('home');scrollToSection('#contact')" class="btn-primary">Book a Visit</a>
 </div>
 
@@ -408,7 +403,7 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
       <h2 class="section-title">Comprehensive care,<br><em>one dedicated doctor</em></h2>
     </div>
     <div class="services-grid">
-      <div class="svc"><div class="svc-num">01</div><div class="svc-name">Family Care</div><p class="svc-desc">Holistic health for patients of all ages — from your youngest to your eldest.</p></div>
+      <div class="svc"><div class="svc-num">01</div><div class="svc-name">Family Care</div><p class="svc-desc">Holistic health for patients of all ages from your youngest to your eldest.</p></div>
       <div class="svc"><div class="svc-num">02</div><div class="svc-name">Wound Care</div><p class="svc-desc">Expert assessment and management of acute and chronic wounds with proper protocols.</p></div>
       <div class="svc"><div class="svc-num">03</div><div class="svc-name">Diabetes Management</div><p class="svc-desc">Ongoing monitoring and personalised plans helping diabetic patients live fuller lives.</p></div>
       <div class="svc"><div class="svc-num">04</div><div class="svc-name">On-site Pharmacy</div><p class="svc-desc">Prescribed medications dispensed directly at the clinic for your convenience.</p></div>
@@ -421,8 +416,8 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
   <section class="about" id="about">
     <div class="about-left">
       <blockquote class="about-quote">"Every patient deserves the time to be truly heard."</blockquote>
-      <p class="about-body">Suwapiyasa Family Care was built on a simple belief — that quality healthcare should feel personal. Dr. Malika Mendis brings over two decades of clinical experience to every consultation, combining precision with genuine warmth.</p>
-      <p class="about-body">We are a small clinic by design. Fewer patients, deeper care. Whether you're managing a long-term condition or need a trusted doctor for your family's everyday health, we treat you as a person — not a file number.</p>
+      <p class="about-body">Suwapiyasa Family Care was built on a simple belief - that quality healthcare should feel personal. Dr. Malika Mendis brings over two decades of clinical experience to every consultation, combining precision with genuine warmth.</p>
+      <p class="about-body">We are a small clinic by design. Fewer patients, deeper care. Whether you're managing a long-term condition or need a trusted doctor for your family's everyday health, we treat you as a person - not a file number.</p>
       <div class="expertise-wrap">
         <span class="tag">OPD</span>
         <span class="tag">Wound Care</span>
@@ -480,6 +475,17 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
       </iframe>
     </div>
   </div>
+
+  <!-- PARTNERS -->
+  <section class="partners-strip">
+    <p class="partners-strip-label">Our Partners</p>
+    <div class="partners-grid">
+      <div class="partner-card"><img src="photo/partners/Hemas.jpg" alt="Hemas"/></div>
+      <div class="partner-card"><img src="photo/partners/dlab.png" alt="D Lab"/></div>
+      <div class="partner-card"><img src="photo/partners/lee.jpg" alt="Lee"/></div>
+      <div class="partner-card"><img src="photo/partners/mel.png" alt="Mel"/></div>
+    </div>
+  </section>
 
 </div><!-- /page-home -->
 
@@ -567,36 +573,13 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
   </div>
 </div><!-- /page-gallery -->
 
-<!-- ══════════════════ PARTNERS PAGE ══════════════════ -->
-<div class="page" id="page-partners">
-  <div class="partners-page">
-    <div class="partners-intro">
-      <p class="eyebrow">Our Partners</p>
-      <h2 class="section-title">Trusted<br><em>organisations we work with</em></h2>
-      <p style="font-size:.85rem;color:var(--muted);margin-top:1rem;font-weight:400;max-width:500px;margin-left:auto;margin-right:auto">We collaborate with leading healthcare and pharmaceutical organisations to bring you the best in care and diagnostics.</p>
-    </div>
-    <div class="partners-grid">
-      <div class="partner-card">
-        <img src="photo/partners/Hemas.jpg" alt="Hemas"/>
-      </div>
-      <div class="partner-card">
-        <img src="photo/partners/dlab.png" alt="D Lab"/>
-      </div>
-      <div class="partner-card">
-        <img src="photo/partners/lee.jpg" alt="Lee"/>
-      </div>
-      <div class="partner-card">
-        <img src="photo/partners/mel.png" alt="Mel"/>
-      </div>
-    </div>
-  </div>
-</div><!-- /page-partners -->
 
 <!-- FOOTER (shared) -->
 <footer>
   <div class="f-brand"><img src="photo/LOGO_wht.png" alt="Suwapiyasa Family Care logo"/><strong>Suwapiyasa</strong> <span>Family Care</span></div>
   <p>Dr. Malika Mendis · SLMC REG.NO. 19252 · Family Physician</p>
-  <p>© Suwapiyasa 2026 All rights reserved</p>
+  <p>© Suwapiyasa 2026 All rights reserved<br>Powered by konstriq.com</p> 
+  
 </footer>
 
 <!-- ══════════════════ ADMIN PAGE ══════════════════ -->
