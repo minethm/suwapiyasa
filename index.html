@@ -309,6 +309,23 @@ footer{
 .f-brand span{font-weight:400;color:rgba(255,255,255,0.7)}
 footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spacing:.04em}
 
+/* MOBILE AVAILABILITY BAR */
+.mobile-avail-bar{
+  display:none;position:fixed;
+  left:0;right:0;top:calc(46px + 2rem);
+  z-index:199;
+  background:rgba(255,255,255,0.96);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:.4rem 5vw;
+}
+.mobile-avail-row{display:flex;align-items:center;gap:.55rem;padding:.22rem 0}
+.mob-avail-label{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-lt);font-weight:500;min-width:4.2rem}
+.mob-avail-time{font-size:.6rem;color:var(--light-muted);flex:1;letter-spacing:.02em}
+.mob-avail-status{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:#16803C;font-weight:500;transition:color .3s}
+.mob-avail-status.closed{color:#991B1B}
+.mobile-avail-divider{height:1px;background:var(--border);margin:.05rem 0}
+
 /* MOBILE NAV */
 .nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:.4rem;background:none;border:none;flex-shrink:0}
 .nav-hamburger span{display:block;width:22px;height:1.5px;background:var(--navy);transition:all .3s}
@@ -350,11 +367,16 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
   .nav-hamburger{display:flex}
   .nav-brand img{height:46px}
   .nav-brand{font-size:.68rem}
+  .mobile-avail-bar{display:block}
+  .hero{padding-top:9rem}
+  .gallery-page{padding-top:9rem}
+  .events-page{padding-top:9rem}
+  .admin-wrap{padding-top:9rem}
 }
 @media(max-width:560px){
   .services-grid,.gallery-grid,.partners-grid,.events-grid{grid-template-columns:1fr}
   .gallery-item:nth-child(1),.gallery-item:nth-child(5){aspect-ratio:1}
-  .hero{padding:7rem 5vw 4rem}
+  .hero{padding:9rem 5vw 4rem}
   .hero-actions{flex-direction:column;align-items:center}
   .btn-primary,.btn-outline{width:100%;max-width:280px;text-align:center}
   .about{padding:5rem 5vw}
@@ -404,6 +426,23 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
   </div>
   <button class="nav-hamburger" onclick="openMobileNav()" aria-label="Open menu"><span></span><span></span><span></span></button>
 </nav>
+
+<!-- MOBILE AVAILABILITY BAR -->
+<div class="mobile-avail-bar" id="mobile-avail-bar">
+  <div class="mobile-avail-row">
+    <div class="nav-avail-dot" id="mob-dot-morning"></div>
+    <span class="mob-avail-label">Morning</span>
+    <span class="mob-avail-time" id="mob-time-morning">9:00AM – 12:00PM</span>
+    <span class="mob-avail-status" id="mob-status-morning">Open</span>
+  </div>
+  <div class="mobile-avail-divider"></div>
+  <div class="mobile-avail-row">
+    <div class="nav-avail-dot" id="mob-dot-evening"></div>
+    <span class="mob-avail-label">Evening</span>
+    <span class="mob-avail-time" id="mob-time-evening">6:00PM – 10:30PM</span>
+    <span class="mob-avail-status" id="mob-status-evening">Open</span>
+  </div>
+</div>
 
 <!-- MOBILE NAV OVERLAY -->
 <div class="mobile-nav" id="mobile-nav">
@@ -849,6 +888,10 @@ function applyStatus(session, accepting){
   if(navDot){ accepting ? navDot.classList.remove('closed') : navDot.classList.add('closed'); }
   const navSt = document.getElementById(`nav-status-${session}`);
   if(navSt){ navSt.textContent = accepting ? 'Open' : 'Closed'; accepting ? navSt.classList.remove('closed') : navSt.classList.add('closed'); }
+  const mobDot = document.getElementById(`mob-dot-${session}`);
+  if(mobDot){ accepting ? mobDot.classList.remove('closed') : mobDot.classList.add('closed'); }
+  const mobSt = document.getElementById(`mob-status-${session}`);
+  if(mobSt){ mobSt.textContent = accepting ? 'Open' : 'Closed'; accepting ? mobSt.classList.remove('closed') : mobSt.classList.add('closed'); }
 }
 
 /* ── ADMIN AUTH ── */
@@ -872,6 +915,7 @@ function saveSessionTime(session){
   if(!val) return;
   document.getElementById(`avail-time-${session}`).textContent = val;
   const navT = document.getElementById(`nav-time-${session}`); if(navT) navT.textContent = val;
+  const mobT = document.getElementById(`mob-time-${session}`); if(mobT) mobT.textContent = val;
   localStorage.setItem(`clinic_time_${session}`, val);
   if(typeof firebaseSaveTime === 'function') firebaseSaveTime(session, val);
   document.getElementById('admin-feedback').textContent = 'Time updated.';
@@ -1001,7 +1045,7 @@ function _saveEvents(){
   const stored=localStorage.getItem(`clinic_${s}`);
   if(stored !== null) applyStatus(s, stored !== 'false');
   const t=localStorage.getItem(`clinic_time_${s}`);
-  if(t){ const el=document.getElementById(`avail-time-${s}`); if(el) el.textContent=t; const nt=document.getElementById(`nav-time-${s}`); if(nt) nt.textContent=t; }
+  if(t){ const el=document.getElementById(`avail-time-${s}`); if(el) el.textContent=t; const nt=document.getElementById(`nav-time-${s}`); if(nt) nt.textContent=t; const mt=document.getElementById(`mob-time-${s}`); if(mt) mt.textContent=t; }
 });
 (function(){
   try{ const e=localStorage.getItem('clinic_events'); if(e){ window._events=JSON.parse(e); renderEvents(window._events); } }catch(x){}
@@ -1045,7 +1089,7 @@ function _saveEvents(){
     };
     ['morning','evening'].forEach(s=>{
       onValue(timeRefs[s], (snap)=>{
-        const v=snap.val(); if(v){ const el=document.getElementById(`avail-time-${s}`); if(el) el.textContent=v; const nt=document.getElementById(`nav-time-${s}`); if(nt) nt.textContent=v; }
+        const v=snap.val(); if(v){ const el=document.getElementById(`avail-time-${s}`); if(el) el.textContent=v; const nt=document.getElementById(`nav-time-${s}`); if(nt) nt.textContent=v; const mt=document.getElementById(`mob-time-${s}`); if(mt) mt.textContent=v; }
       });
     });
 
