@@ -320,7 +320,7 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
   padding:.4rem 5vw;
 }
 .mobile-avail-row{display:flex;align-items:center;gap:.55rem;padding:.22rem 0}
-.mob-avail-label{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-lt);font-weight:500;min-width:4.2rem}
+.mob-avail-label{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-lt);font-weight:500;width:5rem;flex-shrink:0}
 .mob-avail-time{font-size:.6rem;color:var(--light-muted);flex:1;letter-spacing:.02em}
 .mob-avail-status{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:#16803C;font-weight:500;transition:color .3s}
 .mob-avail-status.closed{color:#991B1B}
@@ -756,29 +756,36 @@ function closeMobileNav(){
 (function(){
   const canvas=document.getElementById('bg-canvas');
   const ctx=canvas.getContext('2d');
-  let W,H,pulses,crosses,pills,dnaNodes,lastPulse=0;
+  let W,H,pulses,crosses,pills,lastPulse=0,resizeTimer;
 
   function resize(){
-    W=canvas.width=window.innerWidth;
-    H=canvas.height=window.innerHeight;
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    W=window.innerWidth;
+    H=window.innerHeight;
+    canvas.width=Math.round(W*dpr);
+    canvas.height=Math.round(H*dpr);
+    canvas.style.width=W+'px';
+    canvas.style.height=H+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
     init();
   }
 
   function init(){
     pulses=[];
+    const mobile=W<768;
 
-    // floating crosses
     crosses=[];
-    for(let i=0;i<18;i++) crosses.push({
+    const nCross=mobile?7:18;
+    for(let i=0;i<nCross;i++) crosses.push({
       x:Math.random()*W, y:Math.random()*H,
       vx:(Math.random()-.5)*.25, vy:(Math.random()-.5)*.25,
       size:14+Math.random()*22, opacity:.04+Math.random()*.08,
       phase:Math.random()*Math.PI*2
     });
 
-    // floating pills (capsules)
     pills=[];
-    for(let i=0;i<30;i++){
+    const nPill=mobile?10:30;
+    for(let i=0;i<nPill;i++){
       const angle=Math.random()*Math.PI*2;
       pills.push({
         x:Math.random()*W, y:Math.random()*H,
@@ -789,11 +796,6 @@ function closeMobileNav(){
         phase:Math.random()*Math.PI*2
       });
     }
-
-    // DNA strand nodes — two parallel sine-wave chains
-    dnaNodes=[];
-    const cols=Math.floor(W/60)+2;
-    for(let i=0;i<cols;i++) dnaNodes.push({ xOff:i*60, speed:.0004+Math.random()*.0002 });
   }
 
   function spawnPulse(){
@@ -822,7 +824,6 @@ function closeMobileNav(){
     ctx.closePath(); ctx.stroke();
     ctx.restore();
   }
-
 
   function tick(now){
     ctx.clearRect(0,0,W,H);
@@ -866,7 +867,7 @@ function closeMobileNav(){
     requestAnimationFrame(tick);
   }
 
-  window.addEventListener('resize',resize);
+  window.addEventListener('resize',()=>{ clearTimeout(resizeTimer); resizeTimer=setTimeout(resize,200); });
   resize();
   requestAnimationFrame(tick);
 })();
