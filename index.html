@@ -1474,14 +1474,19 @@ function renderAdminBookings(bookings){
     </div>`).join('');
 }
 function adminSaveBookingLink(id){
-  const input=document.getElementById(`bklink-${id}`);
+  const input=document.getElementById('bklink-'+id);
   if(!input) return;
   const link=input.value.trim();
+  const fb=document.getElementById('admin-feedback');
+  if(!link){ fb.textContent='Please enter a meeting link first.'; return; }
   if(typeof window.firebaseUpdateBooking==='function'){
-    window.firebaseUpdateBooking(id,{meetingLink:link||null}).then(()=>{
-      document.getElementById('admin-feedback').textContent='Meeting link saved.';
-      setTimeout(()=>{ document.getElementById('admin-feedback').textContent=''; },3000);
-    });
+    fb.textContent='Saving…';
+    window.firebaseUpdateBooking(id,{meetingLink:link})
+      .then(()=>{
+        fb.textContent='Meeting link saved ✓';
+        setTimeout(()=>{ fb.textContent=''; },3000);
+      })
+      .catch(e=>{ fb.textContent='Save failed: '+(e.message||'check Firebase connection'); });
   }
 }
 function adminUpdateBookingStatus(id,status){
