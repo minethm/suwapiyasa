@@ -1440,7 +1440,11 @@ function renderUserBookingCards(allBookings){
     const sl2=sc.charAt(0).toUpperCase()+sc.slice(1);
     const linkHtml=b.meetingLink
       ?`<a class="bk-link-btn" href="${_esc(b.meetingLink)}" target="_blank" rel="noopener">Join Call →</a>`
-      :`<span class="bk-link-pending">Meeting link will appear here once confirmed</span>`;
+      : sc==='confirmed'
+        ?`<span class="bk-link-pending">Booking confirmed — Dr. Mendis will add the meeting link shortly.</span>`
+        : sc==='cancelled'
+        ?`<span class="bk-link-pending" style="color:#991B1B">This booking has been cancelled.</span>`
+        :`<span class="bk-link-pending">Awaiting confirmation from Dr. Mendis.</span>`;
     return `<div class="bk-card">
       <div class="bk-header"><div><div class="bk-date">${_esc(b.date)}</div><div class="bk-session">${_esc(b.time||'')}</div></div><span class="bk-badge ${sc}">${sl2}</span></div>
       <p class="bk-reason">${_esc(b.reason)}</p>${linkHtml}</div>`;
@@ -1482,10 +1486,17 @@ function adminSaveBookingLink(id){
 }
 function adminUpdateBookingStatus(id,status){
   if(typeof window.firebaseUpdateBooking==='function'){
-    window.firebaseUpdateBooking(id,{status}).then(()=>{
-      document.getElementById('admin-feedback').textContent=`Booking marked as ${status}.`;
-      setTimeout(()=>{ document.getElementById('admin-feedback').textContent=''; },3000);
-    });
+    const updates={status};
+    if(status==='confirmed'){
+      const li=document.getElementById('bklink-'+id);
+      if(li&&li.value.trim()) updates.meetingLink=li.value.trim();
+    }
+    window.firebaseUpdateBooking(id,updates)
+      .then(()=>{
+        document.getElementById('admin-feedback').textContent=`Booking marked as ${status}.`;
+        setTimeout(()=>{ document.getElementById('admin-feedback').textContent=''; },3000);
+      })
+      .catch(()=>{ document.getElementById('admin-feedback').textContent='Update failed — check Firebase connection.'; });
   }
 }
 
