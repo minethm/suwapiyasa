@@ -376,6 +376,26 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
 .nav-user-btn:hover{border-color:var(--navy)}
 .nav-user-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0}
 .nav-user-label{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy)}
+/* ACCOUNT PAGE */
+.account-page{padding:8rem 5vw 6rem}
+.account-intro{text-align:center;margin-bottom:3rem}
+.account-wrap{max-width:540px;margin:0 auto}
+.account-avatar{width:60px;height:60px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:#fff;font-weight:300;flex-shrink:0}
+.account-identity{text-align:center;margin-bottom:2rem}
+.account-identity-name{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:300;color:var(--navy)}
+.account-identity-email{font-size:.75rem;color:var(--muted);margin-top:.25rem}
+.acc-section{border:1px solid var(--border);margin-bottom:.8rem;background:rgba(255,255,255,.88)}
+.acc-section-hdr{padding:.9rem 1.4rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.acc-section-title{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--navy);font-weight:500}
+.acc-section-arrow{font-size:.65rem;color:var(--light-muted);letter-spacing:.08em;transition:transform .2s}
+.acc-section-arrow.open{transform:rotate(90deg)}
+.acc-section-body{padding:0 1.4rem 1.4rem;border-top:1px solid var(--border)}
+.acc-section-body .field-group:first-child{margin-top:1rem}
+.account-msg{font-size:.72rem;margin-top:.7rem;min-height:1em;letter-spacing:.02em}
+.account-msg.err{color:#991B1B}
+.account-msg.ok{color:#16803C}
+.account-footer{display:flex;gap:1rem;margin-top:2rem;flex-wrap:wrap}
+.account-footer>*{flex:1;text-align:center}
 /* ADMIN BOOKINGS */
 .admin-bk-item{padding:.75rem 0;border-bottom:1px solid var(--border)}
 .admin-bk-item:last-child{border-bottom:none}
@@ -439,6 +459,7 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
   .admin-wrap{padding-top:9rem}
   .book-page{padding-top:9rem}
   .bookings-page{padding-top:9rem}
+  .account-page{padding-top:9rem}
   .nav-user-btn{display:none}
 }
 @media(max-width:560px){
@@ -456,6 +477,7 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
   .auth-card{padding:2rem 1.4rem}
   .book-page{padding:9rem 5vw 4rem}
   .bookings-page{padding:9rem 5vw 4rem}
+  .account-page{padding:9rem 5vw 4rem}
   footer p{font-size:.65rem}
   .f-brand{font-size:.65rem}
   .f-brand img{height:34px}
@@ -483,7 +505,7 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
 <li><a onclick="showPage('home');scrollToSection('#contact')" class="nav-page" data-target="home">Contact</a></li>
     <li><a onclick="showPage('book')" class="nav-page" data-target="book" style="color:var(--navy);font-weight:500">Book a Call</a></li>
   </ul>
-  <button class="nav-user-btn" id="nav-user-wrap" style="display:none" onclick="showPage('bookings')" title="My Bookings">
+  <button class="nav-user-btn" id="nav-user-wrap" style="display:none" onclick="showPage('account')" title="My Account">
     <div class="nav-user-dot"></div>
     <span class="nav-user-label" id="nav-user-label">Account</span>
   </button>
@@ -531,6 +553,7 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
   <a onclick="closeMobileNav();showPage('home');scrollToSection('#contact')">Contact</a>
   <a onclick="closeMobileNav();showPage('book')" style="font-weight:700">Book a Call</a>
   <a onclick="closeMobileNav();showPage('bookings')" id="mob-bookings-link" style="display:none">My Bookings</a>
+  <a onclick="closeMobileNav();showPage('account')" id="mob-account-link" style="display:none">Account</a>
 </div>
 
 <!-- ══════════════════ HOME PAGE ══════════════════ -->
@@ -765,6 +788,16 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
             <input type="password" class="field-input" id="si-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()"/>
           </div>
           <button class="btn-primary" style="width:100%" onclick="doSignIn()">Sign in</button>
+          <p style="text-align:right;margin-top:.6rem">
+            <a id="forgot-pw-link" onclick="toggleForgotPw()" style="font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--light-muted);cursor:pointer;text-decoration:underline">Forgot password?</a>
+          </p>
+          <div id="forgot-pw-panel" style="display:none;margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--border)">
+            <div class="field-group">
+              <label class="field-label">Email address</label>
+              <input type="email" class="field-input" id="fp-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doForgotPassword()"/>
+            </div>
+            <button class="btn-primary" style="width:100%" onclick="doForgotPassword()">Send Reset Email</button>
+          </div>
         </div>
         <div id="auth-signup" style="display:none">
           <div class="field-group">
@@ -774,6 +807,10 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
           <div class="field-group">
             <label class="field-label">Email</label>
             <input type="email" class="field-input" id="su-email" placeholder="your@email.com"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Date of Birth</label>
+            <input type="date" class="field-input" id="su-birthday"/>
           </div>
           <div class="field-group">
             <label class="field-label">Password</label>
@@ -840,6 +877,19 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
     </div>
   </div>
 </div><!-- /page-bookings -->
+
+<!-- ══════════════════ ACCOUNT PAGE ══════════════════ -->
+<div class="page" id="page-account">
+  <div class="account-page">
+    <div class="account-intro">
+      <p class="eyebrow">My Account</p>
+      <h2 class="section-title">Your <em>account</em></h2>
+    </div>
+    <div class="account-wrap" id="account-content">
+      <p class="bookings-empty" style="color:var(--light-muted);font-style:italic">Loading…</p>
+    </div>
+  </div>
+</div><!-- /page-account -->
 
 <!-- FOOTER (shared) -->
 <footer>
@@ -920,6 +970,7 @@ function showPage(name){
   });
   if(name==='book') renderBookPage(window._currentUser||null);
   if(name==='bookings') renderBookingsPage(window._currentUser||null);
+  if(name==='account') renderAccountPage(window._currentUser||null);
 }
 function scrollToSection(hash){
   setTimeout(()=>{
@@ -1240,12 +1291,15 @@ function onAuthStateChange(user){
     if(wrap){ wrap.style.display='flex'; }
     if(label){ label.textContent = user.displayName || user.email.split('@')[0]; }
     if(mobLink){ mobLink.style.display=''; }
+    const mobAcc=document.getElementById('mob-account-link'); if(mobAcc) mobAcc.style.display='';
   } else {
     if(wrap){ wrap.style.display='none'; }
     if(mobLink){ mobLink.style.display='none'; }
+    const mobAcc=document.getElementById('mob-account-link'); if(mobAcc) mobAcc.style.display='none';
   }
   if(document.getElementById('page-book')?.classList.contains('active')) renderBookPage(user);
   if(document.getElementById('page-bookings')?.classList.contains('active')) renderBookingsPage(user);
+  if(document.getElementById('page-account')?.classList.contains('active')) renderAccountPage(user);
 }
 
 /* ── BOOK PAGE ── */
@@ -1288,13 +1342,14 @@ function doSignIn(){
 function doSignUp(){
   const name=document.getElementById('su-name').value.trim();
   const email=document.getElementById('su-email').value.trim();
+  const birthday=document.getElementById('su-birthday')?.value||'';
   const pw=document.getElementById('su-pw').value;
   const msg=document.getElementById('auth-msg');
   msg.className='auth-msg'; msg.textContent='';
   if(!name||!email||!pw){ msg.className='auth-msg err'; msg.textContent='Please fill in all fields.'; return; }
   if(pw.length<6){ msg.className='auth-msg err'; msg.textContent='Password must be at least 6 characters.'; return; }
   if(typeof window.firebaseSignUp==='function'){
-    window.firebaseSignUp(email,pw,name).catch(e=>{ msg.className='auth-msg err'; msg.textContent=friendlyAuthError(e.code); });
+    window.firebaseSignUp(email,pw,name,birthday).catch(e=>{ msg.className='auth-msg err'; msg.textContent=friendlyAuthError(e.code); });
   }
 }
 function doSignOut(){
@@ -1310,6 +1365,32 @@ function friendlyAuthError(code){
     'auth/weak-password':'Password must be at least 6 characters.',
     'auth/too-many-requests':'Too many attempts. Please try again later.',
   }[code]||'Something went wrong. Please try again.');
+}
+function toggleForgotPw(){
+  const panel=document.getElementById('forgot-pw-panel');
+  const link=document.getElementById('forgot-pw-link');
+  if(!panel) return;
+  const open=panel.style.display!=='none';
+  panel.style.display=open?'none':'block';
+  if(link) link.textContent=open?'Forgot password?':'Cancel';
+  document.getElementById('auth-msg').textContent='';
+  document.getElementById('auth-msg').className='auth-msg';
+}
+function doForgotPassword(){
+  const email=(document.getElementById('fp-email')?.value||'').trim();
+  const msg=document.getElementById('auth-msg');
+  if(!email){ msg.className='auth-msg err'; msg.textContent='Please enter your email address.'; return; }
+  msg.className='auth-msg'; msg.textContent='Sending…';
+  if(typeof window.firebaseSendPasswordReset==='function'){
+    window.firebaseSendPasswordReset(email)
+      .then(()=>{
+        msg.className='auth-msg ok'; msg.textContent='Reset email sent — check your inbox.';
+        document.getElementById('fp-email').value='';
+        document.getElementById('forgot-pw-panel').style.display='none';
+        const link=document.getElementById('forgot-pw-link'); if(link) link.textContent='Forgot password?';
+      })
+      .catch(e=>{ msg.className='auth-msg err'; msg.textContent=friendlyAuthError(e.code); });
+  }
 }
 function submitBooking(){
   const user=window._currentUser;
@@ -1327,7 +1408,6 @@ function submitBooking(){
       document.getElementById('book-confirm').style.display='block';
       document.getElementById('bk-date').value='';
       document.getElementById('bk-time').value='';
-      document.getElementById('bk-phone').value='';
       document.getElementById('bk-reason').value='';
       msg.textContent='';
     }).catch(()=>{ msg.className='auth-msg err'; msg.textContent='Failed to submit. Please try again.'; });
@@ -1409,6 +1489,144 @@ function adminUpdateBookingStatus(id,status){
   }
 }
 
+/* ── ACCOUNT PAGE ── */
+function renderAccountPage(user){
+  const wrap=document.getElementById('account-content');
+  if(!wrap) return;
+  if(!user){
+    wrap.innerHTML='<p class="bookings-empty">Please <a onclick="showPage(\'book\')" style="cursor:pointer;color:var(--navy);text-decoration:underline">sign in</a> to view your account.</p>';
+    return;
+  }
+  const initials=(user.displayName||user.email||'?').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?';
+  wrap.innerHTML=`
+    <div class="account-avatar">${_esc(initials)}</div>
+    <div class="account-identity">
+      <div class="account-identity-name" id="acc-disp-name">${_esc(user.displayName||'Patient')}</div>
+      <div class="account-identity-email">${_esc(user.email)}</div>
+    </div>
+    <div class="acc-section" id="acc-profile">
+      <div class="acc-section-hdr" onclick="toggleAccSection('acc-profile')">
+        <span class="acc-section-title">Personal Info</span>
+        <span class="acc-section-arrow" id="acc-profile-arrow">&#9654;</span>
+      </div>
+      <div class="acc-section-body" id="acc-profile-body" style="display:none">
+        <div class="field-group">
+          <label class="field-label">Full Name</label>
+          <input type="text" class="field-input" id="acc-name" value="${_esc(user.displayName||'')}"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Date of Birth</label>
+          <input type="date" class="field-input" id="acc-birthday"/>
+        </div>
+        <button class="btn-primary" onclick="saveProfile()">Save Changes</button>
+        <p class="account-msg" id="acc-profile-msg"></p>
+      </div>
+    </div>
+    <div class="acc-section" id="acc-email">
+      <div class="acc-section-hdr" onclick="toggleAccSection('acc-email')">
+        <span class="acc-section-title">Change Email</span>
+        <span class="acc-section-arrow" id="acc-email-arrow">&#9654;</span>
+      </div>
+      <div class="acc-section-body" id="acc-email-body" style="display:none">
+        <div class="field-group">
+          <label class="field-label">Current Password</label>
+          <input type="password" class="field-input" id="acc-email-pw" placeholder="••••••••"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">New Email</label>
+          <input type="email" class="field-input" id="acc-new-email" placeholder="new@email.com"/>
+        </div>
+        <button class="btn-primary" onclick="changeEmail()">Update Email</button>
+        <p class="account-msg" id="acc-email-msg"></p>
+      </div>
+    </div>
+    <div class="acc-section" id="acc-pw">
+      <div class="acc-section-hdr" onclick="toggleAccSection('acc-pw')">
+        <span class="acc-section-title">Change Password</span>
+        <span class="acc-section-arrow" id="acc-pw-arrow">&#9654;</span>
+      </div>
+      <div class="acc-section-body" id="acc-pw-body" style="display:none">
+        <div class="field-group">
+          <label class="field-label">Current Password</label>
+          <input type="password" class="field-input" id="acc-cur-pw" placeholder="••••••••"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">New Password</label>
+          <input type="password" class="field-input" id="acc-new-pw" placeholder="At least 6 characters"/>
+        </div>
+        <button class="btn-primary" onclick="changePassword()">Update Password</button>
+        <p class="account-msg" id="acc-pw-msg"></p>
+      </div>
+    </div>
+    <div class="account-footer">
+      <button class="btn-outline" onclick="showPage('bookings')">My Bookings</button>
+      <button class="btn-primary" onclick="doSignOut()">Sign Out</button>
+    </div>`;
+  if(typeof window.firebaseGetUserProfile==='function'){
+    window.firebaseGetUserProfile(user.uid).then(data=>{
+      const bd=document.getElementById('acc-birthday');
+      if(bd&&data&&data.birthday) bd.value=data.birthday;
+    }).catch(()=>{});
+  }
+}
+
+function toggleAccSection(id){
+  const body=document.getElementById(id+'-body');
+  const arrow=document.getElementById(id+'-arrow');
+  if(!body) return;
+  const isOpen=body.style.display!=='none';
+  body.style.display=isOpen?'none':'block';
+  if(arrow) arrow.classList.toggle('open',!isOpen);
+}
+
+function saveProfile(){
+  const user=window._currentUser; if(!user) return;
+  const name=(document.getElementById('acc-name')?.value||'').trim();
+  const birthday=document.getElementById('acc-birthday')?.value||'';
+  const msg=document.getElementById('acc-profile-msg');
+  if(!name){ msg.className='account-msg err'; msg.textContent='Name cannot be empty.'; return; }
+  msg.className='account-msg'; msg.textContent='Saving…';
+  const tasks=[];
+  if(typeof window.firebaseUpdateProfile==='function') tasks.push(window.firebaseUpdateProfile(name));
+  if(typeof window.firebaseSaveUserProfile==='function') tasks.push(window.firebaseSaveUserProfile(user.uid,{birthday}));
+  Promise.all(tasks).then(()=>{
+    msg.className='account-msg ok'; msg.textContent='Saved.';
+    const label=document.getElementById('nav-user-label'); if(label) label.textContent=name;
+    const dn=document.getElementById('acc-disp-name'); if(dn) dn.textContent=name;
+    const av=document.querySelector('.account-avatar');
+    if(av) av.textContent=name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?';
+  }).catch(()=>{ msg.className='account-msg err'; msg.textContent='Failed to save. Please try again.'; });
+}
+
+function changeEmail(){
+  const user=window._currentUser; if(!user) return;
+  const pw=document.getElementById('acc-email-pw')?.value||'';
+  const newEmail=(document.getElementById('acc-new-email')?.value||'').trim();
+  const msg=document.getElementById('acc-email-msg');
+  if(!pw||!newEmail){ msg.className='account-msg err'; msg.textContent='Please fill in all fields.'; return; }
+  msg.className='account-msg'; msg.textContent='Updating…';
+  if(typeof window.firebaseUpdateEmail==='function'){
+    window.firebaseUpdateEmail(user.email,pw,newEmail)
+      .then(()=>{ msg.className='account-msg ok'; msg.textContent='Email updated. Please sign in again.'; document.getElementById('acc-email-pw').value=''; document.getElementById('acc-new-email').value=''; })
+      .catch(e=>{ msg.className='account-msg err'; msg.textContent=friendlyAuthError(e.code); });
+  }
+}
+
+function changePassword(){
+  const user=window._currentUser; if(!user) return;
+  const curPw=document.getElementById('acc-cur-pw')?.value||'';
+  const newPw=document.getElementById('acc-new-pw')?.value||'';
+  const msg=document.getElementById('acc-pw-msg');
+  if(!curPw||!newPw){ msg.className='account-msg err'; msg.textContent='Please fill in all fields.'; return; }
+  if(newPw.length<6){ msg.className='account-msg err'; msg.textContent='Password must be at least 6 characters.'; return; }
+  msg.className='account-msg'; msg.textContent='Updating…';
+  if(typeof window.firebaseUpdatePassword==='function'){
+    window.firebaseUpdatePassword(user.email,curPw,newPw)
+      .then(()=>{ msg.className='account-msg ok'; msg.textContent='Password updated.'; document.getElementById('acc-cur-pw').value=''; document.getElementById('acc-new-pw').value=''; })
+      .catch(e=>{ msg.className='account-msg err'; msg.textContent=friendlyAuthError(e.code); });
+  }
+}
+
 /* ── FALLBACK: read from localStorage until Firebase is connected ── */
 ['morning','evening'].forEach(s=>{
   const stored=localStorage.getItem(`clinic_${s}`);
@@ -1429,8 +1647,8 @@ function adminUpdateBookingStatus(id,status){
      ════════════════════════════════════════════════════════════════ -->
 <script type="module">
   import { initializeApp }           from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-  import { getDatabase, ref, onValue, set, push, update } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut as fbSignOut, updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { getDatabase, ref, onValue, set, push, update, get } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut as fbSignOut, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
   const firebaseConfig = {
     apiKey:            "AIzaSyBzOrxsCvpczwgVj-AdEsU_Q6dF8q5Oozg",
@@ -1493,9 +1711,25 @@ function adminUpdateBookingStatus(id,status){
       if(typeof onAuthStateChange === 'function') onAuthStateChange(user);
     });
     window.firebaseSignOut = () => fbSignOut(auth);
-    window.firebaseSignUp = (email, pw, name) =>
-      createUserWithEmailAndPassword(auth, email, pw).then(c => updateProfile(c.user, {displayName: name}));
+    window.firebaseSignUp = (email, pw, name, birthday) =>
+      createUserWithEmailAndPassword(auth, email, pw).then(c => {
+        const tasks=[updateProfile(c.user,{displayName:name})];
+        if(birthday) tasks.push(set(ref(db,`clinic/users/${c.user.uid}`),{birthday}));
+        return Promise.all(tasks);
+      });
     window.firebaseSignIn = (email, pw) => signInWithEmailAndPassword(auth, email, pw);
+    window.firebaseUpdateProfile = (name) => updateProfile(auth.currentUser,{displayName:name});
+    window.firebaseSaveUserProfile = (uid, data) => set(ref(db,`clinic/users/${uid}`), data);
+    window.firebaseGetUserProfile = (uid) => get(ref(db,`clinic/users/${uid}`)).then(s=>s.val());
+    window.firebaseUpdateEmail = (oldEmail, pw, newEmail) => {
+      const cred=EmailAuthProvider.credential(oldEmail,pw);
+      return reauthenticateWithCredential(auth.currentUser,cred).then(()=>updateEmail(auth.currentUser,newEmail));
+    };
+    window.firebaseUpdatePassword = (email, curPw, newPw) => {
+      const cred=EmailAuthProvider.credential(email,curPw);
+      return reauthenticateWithCredential(auth.currentUser,cred).then(()=>updatePassword(auth.currentUser,newPw));
+    };
+    window.firebaseSendPasswordReset = (email) => sendPasswordResetEmail(auth, email);
 
     // ── BOOKINGS ──
     const bookingsRef = ref(db, 'clinic/bookings');
