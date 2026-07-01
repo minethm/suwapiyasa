@@ -491,6 +491,35 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
   .gallery-caption{opacity:1;background:linear-gradient(to top,rgba(10,22,40,.75) 0%,transparent 100%)}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.scroll-line{display:none}}
+
+/* CHATBOT */
+.chatbot-fab{position:fixed;bottom:2rem;right:2rem;z-index:400;width:52px;height:52px;border-radius:50%;background:var(--navy);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(10,22,40,.3);transition:all .2s}
+.chatbot-fab:hover{background:var(--blue);transform:scale(1.06)}
+.chatbot-panel{position:fixed;bottom:6rem;right:2rem;z-index:400;width:340px;background:#fff;border:1px solid var(--border-md);box-shadow:0 8px 40px rgba(10,22,40,.18);display:flex;flex-direction:column;max-height:480px;transition:opacity .2s,transform .2s;transform-origin:bottom right}
+.chatbot-panel.hidden{opacity:0;pointer-events:none;transform:scale(.95) translateY(8px)}
+.chatbot-hdr{padding:.85rem 1.1rem;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.chatbot-hdr-info{display:flex;align-items:center;gap:.65rem}
+.chatbot-hdr-dot{width:8px;height:8px;border-radius:50%;background:#22C55E;animation:glow 2s ease-in-out infinite;flex-shrink:0}
+.chatbot-hdr-name{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;line-height:1.3}
+.chatbot-hdr-sub{font-size:.57rem;color:rgba(255,255,255,.5);letter-spacing:.04em}
+.chatbot-close-btn{background:none;border:none;color:rgba(255,255,255,.55);cursor:pointer;font-size:1rem;padding:.25rem;line-height:1;transition:color .2s}
+.chatbot-close-btn:hover{color:#fff}
+.chatbot-msgs{flex:1;overflow-y:auto;padding:.85rem;display:flex;flex-direction:column;gap:.6rem;min-height:120px}
+.chat-msg{max-width:85%;font-size:.8rem;line-height:1.65;padding:.55rem .88rem;word-break:break-word}
+.chat-msg.bot{align-self:flex-start;background:var(--offwhite);color:var(--navy);border:1px solid var(--border)}
+.chat-msg.user{align-self:flex-end;background:var(--navy);color:#fff}
+.chat-typing{color:var(--light-muted)!important;font-style:italic}
+.chatbot-chips{display:flex;flex-wrap:wrap;gap:.32rem;padding:0 .85rem .6rem;flex-shrink:0}
+.chat-chip{font-size:.6rem;letter-spacing:.06em;border:1px solid var(--border-md);color:var(--muted);background:transparent;padding:.28rem .65rem;cursor:pointer;font-family:'Jost',sans-serif;transition:all .2s;text-align:left}
+.chat-chip:hover{border-color:var(--navy);color:var(--navy);background:var(--offwhite)}
+.chatbot-input-row{display:flex;border-top:1px solid var(--border);flex-shrink:0}
+.chatbot-input{flex:1;padding:.72rem .9rem;border:none;outline:none;font-family:'Jost',sans-serif;font-size:.82rem;color:var(--navy);background:transparent}
+.chatbot-send-btn{padding:.72rem .85rem;background:none;border:none;border-left:1px solid var(--border);cursor:pointer;color:var(--navy);transition:background .2s;display:flex;align-items:center;justify-content:center}
+.chatbot-send-btn:hover{background:var(--offwhite)}
+@media(max-width:560px){
+  .chatbot-panel{width:calc(100vw - 2rem);right:1rem;bottom:5rem;max-height:400px}
+  .chatbot-fab{bottom:1.4rem;right:1rem}
+}
 </style>
 </head>
 <body>
@@ -959,6 +988,31 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
         <p style="margin-top:1.5rem"><a onclick="adminLogout()" style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer">Sign out</a></p>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- CHATBOT -->
+<button class="chatbot-fab" id="chatbot-fab" onclick="toggleChatbot()" aria-label="Chat with us">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</button>
+<div class="chatbot-panel hidden" id="chatbot-panel">
+  <div class="chatbot-hdr">
+    <div class="chatbot-hdr-info">
+      <div class="chatbot-hdr-dot"></div>
+      <div>
+        <div class="chatbot-hdr-name">Suwapiyasa Assistant</div>
+        <div class="chatbot-hdr-sub">Ask me anything about the clinic</div>
+      </div>
+    </div>
+    <button class="chatbot-close-btn" onclick="toggleChatbot()" aria-label="Close chat">✕</button>
+  </div>
+  <div class="chatbot-msgs" id="chatbot-msgs"></div>
+  <div class="chatbot-chips" id="chatbot-chips"></div>
+  <div class="chatbot-input-row">
+    <input class="chatbot-input" id="chatbot-input" placeholder="Type your question…" onkeydown="if(event.key==='Enter')sendChat()"/>
+    <button class="chatbot-send-btn" onclick="sendChat()" aria-label="Send">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
   </div>
 </div>
 
@@ -1686,6 +1740,121 @@ function changePassword(){
 });
 (function(){
   try{ const e=localStorage.getItem('clinic_events'); if(e){ window._events=JSON.parse(e); renderEvents(window._events); } }catch(x){}
+})();
+
+/* ── CHATBOT ── */
+(function(){
+  const RESPONSES=[
+    {p:['hello','hi ','hey','good morning','good afternoon','good evening'],
+     r:"Hello! 👋 Welcome to Suwapiyasa Family Care. I can help you with clinic hours, services, bookings, and more. What would you like to know?",
+     s:['Clinic hours','Our services','Book a call','About Dr. Mendis']},
+    {p:['open now','available now','accepting now','currently open','are you open'],
+     r:'live',s:['Book a call','Clinic hours','Contact info']},
+    {p:['hour','timing','session','when','morning','evening','open','close','time'],
+     r:"We run two sessions daily:\n\n🌅 Morning — 9:00 AM – 12:00 PM\n🌆 Evening — 6:00 PM – 10:30 PM\n\nLive availability is shown at the top of the page.",
+     s:['Is clinic open now?','Book a call','Contact info']},
+    {p:['service','offer','treat','provide','what do you','help with','specialt'],
+     r:"Our services include:\n\n• Family Care (all ages)\n• Wound Care\n• Diabetes Management\n• On-site Pharmacy\n• ECG\n• Blood Lab Investigations\n\nAll provided personally by Dr. Malika Mendis.",
+     s:['Book a call','About Dr. Mendis','Clinic hours']},
+    {p:['book','appointment','consult','reserve','schedule','call'],
+     r:"To book a consultation:\n\n1. Click 'Book a Call' in the navigation\n2. Create an account or sign in\n3. Choose your preferred date and time\n\nDr. Mendis will confirm and share a meeting link.",
+     s:['Clinic hours','Contact info','Our services']},
+    {p:['doctor','dr.','malika','mendis','who is','physician','qualify','experience','about'],
+     r:'Dr. Malika Mendis is a highly experienced Family Physician with 20+ years in practice.\n\nQualifications:\nMBBS(SL) · DFM(Colombo)\nMRCGP(INT-UK) · MCGP(SL)\nSLMC Reg. No. 19252\n\n“Every patient deserves the time to be truly heard.”',
+     s:['Our services','Book a call','Clinic hours']},
+    {p:['location','address','where','find us','map','direction','situated'],
+     r:"Our location is shown on the map in the Contact section of the website. We're based in Sri Lanka. Scroll down on the home page to find the map.",
+     s:['Contact info','Clinic hours','Book a call']},
+    {p:['contact','phone','number','email','reach','call us','whatsapp'],
+     r:"You can reach us at:\n\n📞 +94 777 791 949\n📧 malika.mendis@gmail.com\n\nFor urgent matters, calling is recommended.",
+     s:['Clinic hours','Book a call','Our services']},
+    {p:['diabetes','diabetic','sugar','glucose','blood sugar'],
+     r:"Dr. Mendis provides personalised diabetes management including ongoing monitoring and treatment plans to help patients live fuller, healthier lives. Blood glucose testing is also available on-site.",
+     s:['Our services','Book a call','Contact info']},
+    {p:['ecg','heart','cardiac','electrocardiogram'],
+     r:"We offer on-site ECG (Electrocardiogram) testing for cardiac screening and monitoring, reviewed directly by Dr. Mendis at the clinic.",
+     s:['Our services','Book a call','Clinic hours']},
+    {p:['blood','lab','test','investigation','fbc','panel','lipid'],
+     r:"Our blood lab investigations include:\n\n• Full Blood Count (FBC)\n• Metabolic panels\n• Lipid profiles\n• Full diagnostic blood work\n\nAll processed at the clinic.",
+     s:['Our services','Book a call','Contact info']},
+    {p:['wound','injury','dressing','cut','sore','ulcer'],
+     r:"We provide expert wound care including assessment and management of acute and chronic wounds using proper clinical protocols.",
+     s:['Our services','Book a call','Clinic hours']},
+    {p:['pharmacy','medicine','prescription','medication','drug'],
+     r:"We have an on-site pharmacy where prescribed medications are dispensed directly at the clinic — no separate trip needed.",
+     s:['Our services','Book a call','About Dr. Mendis']},
+    {p:['family','children','kids','elderly','baby','infant','all age'],
+     r:"Suwapiyasa Family Care treats patients of all ages — from infants to the elderly. We provide holistic, personalised care for the whole family.",
+     s:['Our services','Book a call','About Dr. Mendis']},
+    {p:['price','cost','fee','charge','how much','payment','rate'],
+     r:"For consultation fees please contact us directly:\n\n📞 +94 777 791 949\n📧 malika.mendis@gmail.com\n\nFees vary by service.",
+     s:['Contact info','Book a call','Our services']},
+    {p:['emergency','urgent','serious','critical'],
+     r:"For medical emergencies please call emergency services immediately.\n\nFor urgent but non-emergency matters you can reach us at:\n📞 +94 777 791 949",
+     s:['Contact info','Clinic hours','Book a call']},
+    {p:['thank','thanks','bye','goodbye','see you','great','perfect'],
+     r:"Thank you for reaching out! We look forward to caring for you at Suwapiyasa Family Care. Stay well! 😊",
+     s:['Book a call','Clinic hours','Our services']},
+  ];
+  const DEFAULT={r:"I'm not sure about that, but our team can help directly:\n\n📞 +94 777 791 949\n📧 malika.mendis@gmail.com",s:['Clinic hours','Our services','Book a call','Contact info']};
+  const INIT_CHIPS=['Clinic hours','Our services','Book a call','About Dr. Mendis','Contact info'];
+  let open=false,started=false;
+
+  function safe(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function appendMsg(text,type){
+    const msgs=document.getElementById('chatbot-msgs');if(!msgs)return;
+    const d=document.createElement('div');d.className='chat-msg '+type;
+    d.innerHTML=type==='bot'?safe(text).replace(/\n/g,'<br>'):safe(text);
+    msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
+  }
+  function setChips(chips){
+    const el=document.getElementById('chatbot-chips');if(!el)return;
+    el.innerHTML=(chips||[]).map(c=>`<button class="chat-chip" onclick="window._chatChip('${safe(c)}')">${safe(c)}</button>`).join('');
+  }
+  function getBotResponse(text){
+    const low=text.toLowerCase();
+    if(low.includes('open now')||low.includes('available now')||low.includes('is clinic open')||low.includes('are you open')){
+      const mClosed=document.getElementById('nav-dot-morning')?.classList.contains('closed');
+      const eClosed=document.getElementById('nav-dot-evening')?.classList.contains('closed');
+      const anyOpen=!mClosed||!eClosed;
+      return{r:anyOpen?"Yes, we're currently accepting patients! 🟢 Live status is shown at the top of the page.":"The clinic is not accepting patients right now. 🔴\n\nOur sessions:\n🌅 Morning: 9:00 AM – 12:00 PM\n🌆 Evening: 6:00 PM – 10:30 PM",s:['Book a call','Clinic hours','Contact info']};
+    }
+    for(const entry of RESPONSES){
+      if(entry.p.some(p=>low.includes(p))) return entry;
+    }
+    return DEFAULT;
+  }
+  window._chatChip=function(text){const i=document.getElementById('chatbot-input');if(i){i.value=text;sendChat();}};
+  window.toggleChatbot=function(){
+    open=!open;
+    const panel=document.getElementById('chatbot-panel');if(!panel)return;
+    panel.classList.toggle('hidden',!open);
+    if(open){
+      if(!started){
+        started=true;
+        appendMsg("Hello! 👋 I'm the Suwapiyasa assistant. I can help you with clinic hours, services, booking, and more.\n\nWhat would you like to know?","bot");
+        setChips(INIT_CHIPS);
+      }
+      setTimeout(()=>document.getElementById('chatbot-input')?.focus(),150);
+    }
+  };
+  window.sendChat=function(){
+    const input=document.getElementById('chatbot-input');if(!input)return;
+    const text=input.value.trim();if(!text)return;
+    input.value='';
+    appendMsg(text,'user');
+    setChips([]);
+    const msgs=document.getElementById('chatbot-msgs');
+    const typing=document.createElement('div');
+    typing.className='chat-msg bot chat-typing';typing.textContent='…';
+    msgs?.appendChild(typing);if(msgs)msgs.scrollTop=msgs.scrollHeight;
+    setTimeout(()=>{
+      typing.parentNode?.removeChild(typing);
+      const res=getBotResponse(text);
+      appendMsg(res.r,'bot');
+      setChips(res.s);
+    },420);
+  };
 })();
 </script>
 
