@@ -492,6 +492,16 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.scroll-line{display:none}}
 
+/* SCHEDULE TODAY */
+.hours-row.today{background:rgba(10,22,40,.04);border-left:3px solid var(--navy);padding-left:.75rem;margin-left:-.75rem}
+.hours-row.today .t{color:var(--navy);font-weight:600}
+.sched-live{display:flex;flex-direction:column;gap:.1rem;align-items:flex-end}
+.sched-live-session{display:flex;align-items:center;gap:.35rem;font-size:.7rem;color:var(--muted)}
+.sched-live-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.sched-live-status{font-weight:500}
+.sched-live-status.open{color:#16803C}
+.sched-live-status.closed{color:#991B1B}
+
 /* CHATBOT */
 .chatbot-fab{position:fixed;bottom:2rem;right:2rem;z-index:400;width:52px;height:52px;border-radius:50%;background:var(--navy);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(10,22,40,.3);transition:all .2s}
 .chatbot-fab:hover{background:var(--blue);transform:scale(1.06)}
@@ -669,6 +679,16 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
           <span class="avail-row-label">Evening · <span id="avail-time-evening">6:00PM – 10:30PM</span></span>
           <div class="pulse-badge" id="status-badge-evening"><div class="pulse-dot"></div><span id="status-text-evening">Accepting patients</span></div>
         </div>
+        <div style="margin-top:1.4rem">
+          <p class="cb-label" style="margin-bottom:.65rem">Weekly Schedule</p>
+          <div class="hours-row" id="sched-0"><span class="t">Monday</span><span class="sched-static">9:00 AM – 12:00 PM &nbsp;·&nbsp; 6:00 – 10:30 PM</span></div>
+          <div class="hours-row" id="sched-1"><span class="t">Tuesday</span><span class="sched-static">9:00 AM – 12:00 PM &nbsp;·&nbsp; 6:00 – 10:30 PM</span></div>
+          <div class="hours-row" id="sched-2"><span class="t">Wednesday</span><span class="sched-static">9:00 AM – 12:00 PM &nbsp;·&nbsp; 6:00 – 10:30 PM</span></div>
+          <div class="hours-row" id="sched-3"><span class="t">Thursday</span><span class="sched-static">9:00 AM – 12:00 PM &nbsp;·&nbsp; 6:00 – 10:30 PM</span></div>
+          <div class="hours-row" id="sched-4"><span class="t">Friday</span><span class="sched-static">9:00 AM – 12:00 PM &nbsp;·&nbsp; 6:00 – 10:30 PM</span></div>
+          <div class="hours-row" id="sched-5"><span class="t">Saturday</span><span class="sched-static">9:00 AM – 12:00 PM &nbsp;·&nbsp; 6:00 – 10:30 PM</span></div>
+          <div class="hours-row" id="sched-6"><span class="t">Sunday</span><span class="sched-static">9:00 AM – 12:00 PM &nbsp;·&nbsp; 6:00 – 10:30 PM</span></div>
+        </div>
       </div>
     </div>
   </section>
@@ -839,7 +859,7 @@ footer p{font-size:.7rem;font-weight:300;color:rgba(255,255,255,.45);letter-spac
             <input type="text" class="field-input" id="su-name" placeholder="Your full name"/>
           </div>
           <div class="field-group">
-            <label class="field-label">Email</label>
+            <label class="field-label">Email</label> 
             <input type="email" class="field-input" id="su-email" placeholder="your@email.com"/>
           </div>
           <div class="field-group">
@@ -1171,6 +1191,43 @@ function closeMobileNav(){
 /* ── ADMIN PASSWORD (change this to something only you know) ── */
 const ADMIN_PASSWORD = 'suwapiyasa2026';
 
+/* ── WEEKLY SCHEDULE: TODAY HIGHLIGHT ── */
+(function(){
+  const jsToIdx={0:6,1:0,2:1,3:2,4:3,5:4,6:5}; // JS getDay() → Mon=0…Sun=6
+  const todayIdx=jsToIdx[new Date().getDay()];
+  for(let i=0;i<7;i++){
+    const row=document.getElementById('sched-'+i);
+    if(!row) continue;
+    if(i===todayIdx){
+      row.classList.add('today');
+      const staticSpan=row.querySelector('.sched-static');
+      if(staticSpan){
+        staticSpan.innerHTML='<span class="sched-live" id="sched-live-display"></span>';
+      }
+    }
+  }
+  window._refreshSchedLive=function(){
+    const el=document.getElementById('sched-live-display');
+    if(!el) return;
+    const mOpen=!document.getElementById('nav-dot-morning')?.classList.contains('closed');
+    const eOpen=!document.getElementById('nav-dot-evening')?.classList.contains('closed');
+    const mTime=document.getElementById('avail-time-morning')?.textContent||'9:00AM – 12:00PM';
+    const eTime=document.getElementById('avail-time-evening')?.textContent||'6:00PM – 10:30PM';
+    el.innerHTML=`
+      <span class="sched-live-session">
+        <span class="sched-live-dot" style="background:${mOpen?'#22C55E':'#EF4444'}"></span>
+        <span>${mTime}</span>
+        <span class="sched-live-status ${mOpen?'open':'closed'}">${mOpen?'Open':'Closed'}</span>
+      </span>
+      <span class="sched-live-session">
+        <span class="sched-live-dot" style="background:${eOpen?'#22C55E':'#EF4444'}"></span>
+        <span>${eTime}</span>
+        <span class="sched-live-status ${eOpen?'open':'closed'}">${eOpen?'Open':'Closed'}</span>
+      </span>`;
+  };
+  setTimeout(window._refreshSchedLive, 800);
+})();
+
 /* ── STATUS BADGE ── */
 function applyStatus(session, accepting){
   const badge = document.getElementById(`status-badge-${session}`);
@@ -1189,6 +1246,7 @@ function applyStatus(session, accepting){
   if(mobDot){ accepting ? mobDot.classList.remove('closed') : mobDot.classList.add('closed'); }
   const mobSt = document.getElementById(`mob-status-${session}`);
   if(mobSt){ mobSt.textContent = accepting ? 'Open' : 'Closed'; accepting ? mobSt.classList.remove('closed') : mobSt.classList.add('closed'); }
+  if(typeof window._refreshSchedLive==='function') window._refreshSchedLive();
 }
 
 /* ── ADMIN AUTH ── */
